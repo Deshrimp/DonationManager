@@ -1,7 +1,7 @@
 import React from "react"
 import { Redirect } from "react-router-dom"
 import Axios from "axios"
-
+import Layout from "../components/Layout"
 import {
   FaUser,
   FaAddressCard,
@@ -13,6 +13,7 @@ import {
   FaUserTie,
   FaRegIdCard
 } from "react-icons/fa"
+import { withAlert } from "react-alert"
 
 class Registration extends React.PureComponent {
   state = {
@@ -53,15 +54,20 @@ class Registration extends React.PureComponent {
 
     //once you believe the data is valid, submit the request
     try {
-      const result = await Axios.post("/api/centers/create", form)
+      const result = await Axios.post("/api/centers/create", form).then(
+        r => r.data
+      )
       console.log(result)
-      if (!result.data.error) {
+      if (!result.error) {
+        this.props.alert.success(result.message)
         this.setState({ registered: true })
+      } else {
+        this.props.alert.error(result.message)
       }
     } catch (err) {
-      //if we have an error we'll end up here in the catch block
       console.log(err)
-      alert("Registration failed")
+
+      this.props.alert.error("Registration failed")
     }
   }
 
@@ -73,8 +79,8 @@ class Registration extends React.PureComponent {
     } = this
 
     return (
-      <div>
-        {registered && <Redirect to="/management" />}
+      <Layout>
+        {registered && <Redirect to="/manage" />}
         <h1>Registro para centros de ayuda</h1>
         <div className="container">
           <div className="row">
@@ -269,9 +275,9 @@ class Registration extends React.PureComponent {
             <input type="button" onClick={register} value="Registrarme" />
           </div>
         </div>
-      </div>
+      </Layout>
     )
   }
 }
 
-export default Registration
+export default withAlert(Registration)

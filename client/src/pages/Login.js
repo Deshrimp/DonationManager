@@ -2,6 +2,8 @@ import React from "react"
 import { Redirect } from "react-router-dom"
 import Axios from "axios"
 
+import Layout from "../components/Layout"
+
 class Login extends React.PureComponent {
   state = {
     success: false,
@@ -36,7 +38,7 @@ class Login extends React.PureComponent {
       state: { username, password, success, message }
     } = this
     return (
-      <div>
+      <Layout>
         {success && <Redirect to="/manage" />}
         <label htmlFor="username">RFC: </label>
         <input
@@ -54,7 +56,7 @@ class Login extends React.PureComponent {
         />
         <button onClick={login}>Login</button>{" "}
         {message && <div className="error">{message}</div>}
-      </div>
+      </Layout>
     )
   }
 }

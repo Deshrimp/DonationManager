@@ -1,13 +1,13 @@
 body {
   background-color: rgb(240, 237, 223);
 }
-* {
+/** {
   box-sizing: border-box;
-}
+}*/
 
-input[type="text"],
-select,
-textarea {
+.input,
+.select,
+.textarea {
   width: 100%;
   padding: 12px;
   border: 1px solid #ccc;
@@ -19,12 +19,12 @@ textarea#description {
   height: 200px;
 }
 
-label {
+.label {
   padding: 12px 12px 12px 0;
   display: inline-block;
 }
 
-input[type="submit"] {
+.submitInput[type="submit"] {
   background-color: #4caf50;
   color: white;
   padding: 12px 20px;
@@ -34,7 +34,7 @@ input[type="submit"] {
   float: right;
 }
 
-input[type="submit"]:hover {
+.submitInput:hover {
   background-color: #45a049;
 }
 
@@ -86,12 +86,10 @@ input[type="submit"]:hover {
     margin-top: 0;
   }
 }
-
 /*MODAL STYLING*/
 
 /* Full-width input fields */
-input[type="text"],
-input[type="password"] {
+.fwinput {
   width: 100%;
   padding: 12px 20px;
   margin: 8px 0;
@@ -101,7 +99,7 @@ input[type="password"] {
 }
 
 /* Set a style for all buttons */
-button {
+.greenButton {
   background-color: #4caf50;
   color: white;
   padding: 14px 20px;
@@ -111,7 +109,7 @@ button {
   width: 100%;
 }
 
-button:hover {
+.greenButton:hover {
   opacity: 0.8;
 }
 
