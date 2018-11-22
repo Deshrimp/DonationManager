@@ -6,7 +6,8 @@ class Login extends React.PureComponent {
   state = {
     success: false,
     username: "",
-    password: ""
+    password: "",
+    message: ""
   }
 
   handleChange = event => {
@@ -14,24 +15,30 @@ class Login extends React.PureComponent {
     this.setState({ [name]: value })
   }
 
-  login = async () => {
+  login = () => {
     const { username, password } = this.state
-    const res = await Axios.post("/api/login", { username, password })
-    if ((res.status = 200)) {
-      this.setState({ success: true })
-    }
+    Axios.post("/api/login", { username, password })
+      .then(({ data: res }) => {
+        if (res.error === false) {
+          this.setState({ success: true })
+        }
+      })
+      .catch(err => {
+        const { message } = err.response.data
+        this.setState({ message })
+      })
   }
 
   render() {
     const {
       login,
       handleChange,
-      state: { username, password, success }
+      state: { username, password, success, message }
     } = this
     return (
       <div>
         {success && <Redirect to="/manage" />}
-        <label htmlFor="username">Username: </label>
+        <label htmlFor="username">RFC: </label>
         <input
           type="text"
           value={username}
@@ -45,7 +52,8 @@ class Login extends React.PureComponent {
           onChange={handleChange}
           value={password}
         />
-        <button onClick={login}>Login</button>
+        <button onClick={login}>Login</button>{" "}
+        {message && <div className="error">{message}</div>}
       </div>
     )
   }

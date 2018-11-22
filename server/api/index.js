@@ -18,10 +18,22 @@ function validateCookies(signedCookies) {
 router.post("/api/login", async (req, res) => {
   const { username, password } = req.body
   const center = await db.centers.findOne({
-    attributes: ["rfc"],
+    attributes: ["password"],
     where: { rfc: username }
   })
-  console.log(center)
+
+  if (!center) {
+    //if we get a null result, the user failed to login because the username doesnt exist
+    res.status(401).send({ error: true, message: "Invalid password" })
+  } else {
+    const { password: dbPassword } = center.dataValues
+    if (password === dbPassword) {
+      res.cookie("username", username)
+      res.status(200).send({ error: false, message: "Login successful" })
+    } else {
+      res.status(401).send({ error: true, message: "Invalid password" })
+    }
+  }
 })
 
 // The api endpoints /api/centers/create
@@ -39,7 +51,12 @@ router.post("/api/centers/create", function(req, res) {
     phone,
     cause,
     description,
-    schedule
+    schedule,
+    password,
+    responsible,
+    city,
+    email,
+    rfc
   } = req.body
   //do validation of all of the above values
   if (!name) {
