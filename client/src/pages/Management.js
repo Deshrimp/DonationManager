@@ -10,3 +10,4 @@ class Management extends React.PureComponent {
     )
   }
 }
+export default Management
