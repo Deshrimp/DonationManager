@@ -1,0 +1,9 @@
+{
+  "scripts": {
+    "start": "concurrently --prefix \"[{name}]\" --names \"API,REACT\" -c \"bgBlue.bold,bgGreen.bold\" \"cd server && nodemon .\" \"cd client && yarn start\""
+  },
+  "devDependencies": {
+    "concurrently": "^4.1.0",
+    "nodemon": "^1.18.6"
+  }
+}
