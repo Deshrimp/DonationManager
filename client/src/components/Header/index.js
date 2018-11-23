@@ -60,22 +60,26 @@ class Header extends React.PureComponent {
     return (
       <Nav>
         <Title>
-          <Link to="/">Donation Site</Link>
+          <Link to="/">¿Dondé puedo donar?</Link>
         </Title>
         <NavItems>
           {username && (
             <NavItem>
-              <Link to="/manage">Manage Items</Link>
+              <Link to="/manage">Administrar donaciones</Link>
             </NavItem>
           )}
           <NavItem>
             {username ? (
-              <Logout onClick={logout}>Sign Out, {username}</Logout>
+              <Logout onClick={logout}>Salir sesion, {username}</Logout>
             ) : (
-              <Link to="/login">Sign in</Link>
+              <Link to="/login">Inicia sesion</Link>
             )}
           </NavItem>
-          <NavItem>{!username && <Link to="/register">Sign up</Link>}</NavItem>
+          <NavItem>
+            {!username && (
+              <Link to="/register">Registro para centros de apoyo</Link>
+            )}
+          </NavItem>
         </NavItems>
         {loggedout && <Redirect to="/" />}
       </Nav>
