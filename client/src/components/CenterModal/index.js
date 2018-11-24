@@ -40,9 +40,9 @@ const ItemWrapper = styled.div`
 const ItemComponent = props => (
   <ItemWrapper>
     <h5>{props.name}</h5>
-    <h6>Type: {props.category}</h6>
+    <h6>Tipo: {props.category}</h6>
     <div>{props.specifications}</div>
-    <span>Needed:{props.quantity}</span>
+    <span>Cantidad Necesitada:{props.quantity}</span>
   </ItemWrapper>
 )
 
@@ -82,7 +82,7 @@ class CenterModal extends React.PureComponent {
         contentLabel="Example Modal"
       >
         {loading ? <Loader /> : itemView}
-        <button onClick={this.props.onRequestClose}>close</button>
+        <button onClick={this.props.onRequestClose}>Cerrar</button>
       </Modal>
     )
   }

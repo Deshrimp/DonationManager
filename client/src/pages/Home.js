@@ -102,8 +102,6 @@ class Home extends React.PureComponent {
     ))
     return (
       <Layout>
-        <Link to="/manage">Manage</Link>
-
         <div style={{ height: "80vh", width: "100vw" }}>
           <GoogleMap
             bootstrapURLKeys={{

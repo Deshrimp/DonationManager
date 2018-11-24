@@ -41,7 +41,7 @@ class Management extends React.PureComponent {
       quantity
     })
     const items = await this.getItems()
-    this.props.alert.success("Item " + name + " added succesfully")
+    this.props.alert.success("Elemento " + name + " agregado exitosamente")
     this.setState({ items, loading: false })
   }
 

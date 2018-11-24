@@ -47,14 +47,14 @@ class Login extends React.PureComponent {
           onChange={handleChange}
           name="username"
         />
-        <label htmlFor="password">Password: </label>
+        <label htmlFor="password">Contraseña: </label>
         <input
           type="text"
           name="password"
           onChange={handleChange}
           value={password}
         />
-        <button onClick={login}>Login</button>{" "}
+        <button onClick={login}>Iniciar Sesion</button>{" "}
         {message && <div className="error">{message}</div>}
       </Layout>
     )

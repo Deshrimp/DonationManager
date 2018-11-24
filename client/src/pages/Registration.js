@@ -96,7 +96,7 @@ class Registration extends React.PureComponent {
     } catch (err) {
       console.log(err.response)
 
-      this.props.alert.error("Registration failed")
+      this.props.alert.error("Direccion no encontrada, intenta de nuevo")
     }
   }
 

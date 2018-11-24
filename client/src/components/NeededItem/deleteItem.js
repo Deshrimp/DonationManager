@@ -11,6 +11,6 @@ export default ({ handleDelete, className, index }) => (
     data-index={index}
     onClick={handleDelete}
   >
-    <RedTrash /> Delete
+    <RedTrash /> Eliminar
   </button>
 )

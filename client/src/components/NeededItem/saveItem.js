@@ -10,7 +10,7 @@ export default props => {
       onClick={handleSave}
       {...others}
     >
-      Save
+      Guardar
     </button>
   )
 }
