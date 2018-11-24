@@ -1,5 +1,4 @@
 import React from "react"
-import { FaPlus, FaMinus } from "react-icons/fa"
 import title from "./title"
 import description from "./description"
 import quantity from "./quantity"

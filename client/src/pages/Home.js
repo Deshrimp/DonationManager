@@ -3,6 +3,11 @@ import { Link } from "react-router-dom"
 import Layout from "../components/Layout"
 import GoogleMap from "google-map-react"
 import styled from "styled-components"
+import Geocode from "react-geocode"
+import Axios from "axios"
+import CenterModal from "../components/CenterModal"
+
+Geocode.setApiKey("AIzaSyAZ2Ctykt1TmoaUCune3iUTUWQltHZHd_E")
 
 const InfoWindowWrapper = styled.div`
   background-color: white;
@@ -21,27 +26,39 @@ const InfoWindowWrapper = styled.div`
   }
 `
 
-const InfoWindow = ({ text }) => (
-  <InfoWindowWrapper>
+const InfoWindow = ({ data, children, handler, $hover }) => (
+  <InfoWindowWrapper data-id={data} onClick={handler}>
     <div />
-    {text}
+    {$hover ? children : null}
   </InfoWindowWrapper>
 )
 
 class Home extends React.PureComponent {
+  getCenters = async () => {
+    const result = await Axios.get("/api/centers").then(res => res.data)
+    return result
+  }
+
   static defaultProps = {
     zoom: 11
   }
 
   state = {
+    modalIsOpen: false,
+    currentId: -1,
     pos: {
       lat: 19.4271749,
       lng: -99.1687312
-    }
+    },
+    centers: []
   }
 
-  componentDidMount() {
-    this.setState({ lat: 0, lng: 0 })
+  //Get client's location
+  async componentDidMount() {
+    //load all centers into state
+    const centers = await this.getCenters()
+    this.setState({ centers })
+    //set map center using user's current position
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(position => {
         const pos = {
@@ -56,21 +73,52 @@ class Home extends React.PureComponent {
     }
   }
 
+  openModal = event => {
+    const currentId = event.target.dataset.id
+    this.setState({ currentId, modalIsOpen: true })
+  }
+
+  closeModal = () => {
+    this.setState({ modalIsOpen: false })
+  }
+
   render() {
-    const { pos } = this.state
+    const {
+      closeModal,
+      openModal,
+      state: { pos, centers, modalIsOpen, currentId }
+    } = this
+    const InfoWindows = centers.map(({ id, lat, lng, name, phone }) => (
+      <InfoWindow
+        key={name}
+        lat={lat}
+        lng={lng}
+        text={name}
+        data={id}
+        handler={openModal}
+      >
+        {name}
+      </InfoWindow>
+    ))
     return (
       <Layout>
         <Link to="/manage">Manage</Link>
-        <div style={{ height: "50vw", width: "50vw" }}>
+
+        <div style={{ height: "80vh", width: "100vw" }}>
           <GoogleMap
             bootstrapURLKeys={{
               key: "AIzaSyAZ2Ctykt1TmoaUCune3iUTUWQltHZHd_E"
             }}
-            defaultCenter={pos}
-            defaultZoom={this.props.zoom}
+            center={pos}
+            zoom={this.props.zoom}
           >
-            <InfoWindow lat={0} lng={0} text={"Kreyser Avrora"} />
+            {InfoWindows}
           </GoogleMap>
+          <CenterModal
+            centerId={currentId}
+            onRequestClose={closeModal}
+            modalIsOpen={modalIsOpen}
+          />
         </div>
       </Layout>
     )

@@ -33,7 +33,8 @@ class Management extends React.PureComponent {
   addItem = async () => {
     const { name, category, specifications, quantity } = this.state
     this.setState({ loading: true })
-    const res = await Axios.post("/api/items/add", {
+    // TODO:  we can assign the below request to ensure its success
+    await Axios.post("/api/items/add", {
       name,
       category,
       specifications,

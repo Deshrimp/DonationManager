@@ -14,13 +14,17 @@ import {
   FaRegIdCard
 } from "react-icons/fa"
 import { withAlert } from "react-alert"
+import geocode from "react-geocode"
+
+geocode.setApiKey("AIzaSyAZ2Ctykt1TmoaUCune3iUTUWQltHZHd_E")
+geocode.enableDebug()
 
 class Registration extends React.PureComponent {
   state = {
     registered: false,
     form: {
       name: "",
-      cause: "children",
+      cause: "",
       description: "",
       rfc: "",
       email: "",
@@ -42,9 +46,34 @@ class Registration extends React.PureComponent {
     this.setState({ form: { ...this.state.form, [name]: value } })
   }
 
+  // returns lat and lng of given address or null if failure
+  getCoordinates = async address => {
+    try {
+      const res = await geocode.fromAddress(address)
+      const { lat, lng } = res.results[0].geometry.location
+      return { lat, lng }
+    } catch (err) {
+      console.log(err)
+      return null
+    }
+  }
+
   register = async () => {
     const { form } = this.state
-    //Here you can dosme client side validation of all of the fields,
+
+    const addressString = `${form.street}, ${form.colonia}, ${
+      form.delegacion
+    }, ${form.city}, ${form.state} ${form.cp}`
+    const result = await this.getCoordinates(addressString)
+
+    if (!result) {
+      this.props.alert.error("Bad address, try again")
+      return
+    } else {
+      form.lat = result.lat
+      form.lng = result.lng
+    }
+    //Here you can do some client side validation of all of the fields,
     //if there is some kind of error in the form, return early, and put a message on the screen
     // for instance if we dont have a street return some kind of error message
     if (!form.name) {
@@ -65,7 +94,7 @@ class Registration extends React.PureComponent {
         this.props.alert.error(result.message)
       }
     } catch (err) {
-      console.log(err)
+      console.log(err.response)
 
       this.props.alert.error("Registration failed")
     }

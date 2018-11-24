@@ -50,7 +50,7 @@ router.post("/api/items/add", async (req, res) => {
   const { name, category, specifications, quantity } = req.body
   const { username } = req.cookies
   const { signedCookies } = req
-  console.log(signedCookies, username)
+  console.log( signedCookies, username)
   //first we need to validate that the person making this request
   // to add an item is actually logged in
   const authorized = await validateCookies(username, signedCookies)
@@ -117,6 +117,25 @@ router.patch("/api/items/:id", async (req, res) => {
   }
 })
 
+//public version of items api endpoint, no authorization required
+
+router.get("/api/items/:id", async (req, res) => {
+  try{const { id } = req.params
+  let items = await db.items.findAll({ where: { rfc: id } })
+  items = items.map(
+    ({ dataValues: { id, name, category, quantity, specifications } }) => ({
+      id,
+      name,
+      category,
+      quantity,
+      specifications
+    })
+  )
+  res.status(200).send(items)
+}catch(err){
+  res.status(400).send(err)
+}})
+
 // This endpoint returns all of the items for a user
 router.get("/api/items", async (req, res) => {
   const {
@@ -142,11 +161,37 @@ router.get("/api/items", async (req, res) => {
   }
 })
 
+//Retrieve lat/lng of all centers
+router.get("/api/centers", async (req, res) => {
+  let centers = await db.centers.findAll()
+  centers = centers.map(({ dataValues: { rfc: id, name, lat, lng } }) => ({
+    id,
+    name,
+    lat,
+    lng
+  }))
+  res.status(200).send(centers)
+
+  /*db.centers.findAll().then(function(centers) {
+    let centersAddress = centers.map(function(centers, index) {
+      let address = []
+      let name = centers.dataValues.name
+      let street = centers.dataValues.street
+      let colonia = centers.dataValues.colonia
+      let delegacion = centers.dataValues.delegacion
+      let city = centers.dataValues.city
+      let phone = centers.dataValues.phone
+      let cause = centers.dataValues.cause
+      address.push(street, colonia, delegacion, city)
+    })
+
+    res.send(centersAddress)
+    console.log(centersAddress)
+  })*/
+})
+
 // The api endpoints /api/centers/create
 router.post("/api/centers/create", function(req, res) {
-  console.log("Accesed centers/create")
-  var r = req.body
-
   const {
     name,
     street,
@@ -162,7 +207,10 @@ router.post("/api/centers/create", function(req, res) {
     responsible,
     city,
     email,
-    rfc
+    rfc,
+    website,
+    lat,
+    lng
   } = req.body
   //do validation of all of the above values
   if (!name) {
@@ -175,23 +223,7 @@ router.post("/api/centers/create", function(req, res) {
     return
   }
   db.centers
-    .create({
-      name,
-      street,
-      colonia,
-      delegacion,
-      cp,
-      state,
-      phone,
-      cause,
-      description,
-      schedule,
-      rfc,
-      email,
-      city,
-      responsible,
-      password
-    })
+    .create(req.body)
     .then(r => {
       res.cookie("username", rfc)
       res.cookie("session", password, { signed: true })
